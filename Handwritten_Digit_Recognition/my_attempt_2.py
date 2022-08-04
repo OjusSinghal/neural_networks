@@ -1,9 +1,10 @@
 import gzip
+import sys
+import time
+
 import numpy as np
 import matplotlib.pyplot as plt
-import time
-from random import random
-import sys
+
 
 def get_data(sample_size, pathX, pathY):
     """
@@ -33,6 +34,7 @@ def get_data(sample_size, pathX, pathY):
     train_lables = np.frombuffer(train_lables, dtype=np.uint8)
 
     return [np.array([data / 255.0 for data in train_data], dtype='f'), train_lables]
+
 
 def show_image(img):
     if len(img) != 28 * 28:
@@ -95,28 +97,13 @@ class Network:
             train_Y = data[1][batch * batch_size : (batch + 1) * batch_size]
             self.backProp(train_X, train_Y, eta)
 
+
     def getAccuracy(self, test_X, test_Y):
-
-        m = len(test_X)
-        correct_predictions = 0
-        predictions = np.zeros([self.layers[-1]], dtype=int)
-        
-        for sample in range(m):
-            a = test_X[sample]
-            for layer in range(len(self.layers) - 1):
-                a = self.sigmoid(np.dot(self.w[layer], a) + self.b[layer])
-
-            maxid = 0
-            maxip = -1000
-            for digit in range(len(a)):
-                if a[digit] >= maxip:
-                    maxid = digit
-                    maxip = a[digit]
-            predictions[maxid] += 1
-            if maxid == test_Y[sample]:
-                correct_predictions += 1
-
-        print("Accuracy:", str(correct_predictions * 100 / m) + "%")
+        test_X = np.transpose(test_X)
+        for layer in range(len(self.layers) - 1):
+            test_X = self.sigmoid(np.dot(self.w[layer], test_X) + self.b[layer].reshape([self.layers[layer + 1], 1]))
+        predictions = np.argmax(test_X, 0)
+        print("Accuracy:", str(np.sum(predictions == test_Y) * 100.0 / float(len(predictions))) + "%")
 
 
 def shuffle(data):
@@ -128,6 +115,7 @@ def shuffle(data):
         temp_data[0][i] = data[0][ids[i]]
         temp_data[1][i] = data[1][ids[i]]
     return temp_data
+
 
 if __name__ == "__main__":
 
@@ -161,3 +149,4 @@ if __name__ == "__main__":
         network.getAccuracy(test_X, test_Y)
         end_time = time.perf_counter()
         print(f"Time taken in this epoch = {end_time - start_time:0.4f} seconds")
+
