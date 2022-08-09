@@ -56,11 +56,16 @@ class Network:
             self.b.append((2.0 * (np.random.randint(1e9, size=[layers[layer]]) / 1e9)) - 1.0)
 
     def sigmoid(self, data):
-        return 1 / (1 + np.exp(-data))
+        ## The first two lines are for suppressing overflow warnings
+        data = np.where(data > 500.0, 500.0, data)
+        data = np.where(data < -500.0, -500.0, data)
+        return np.where(data >= 0, 
+                        1 / (1 + np.exp(-data)), 
+                        np.exp(data) / (1 + np.exp(data)))
 
     def sigmoid_derivative(self, data):
-        temp = np.exp(-data)
-        return temp / ((1 + temp) ** 2)
+        temp = self.sigmoid(data)
+        return temp * (1 - temp)
 
     def backProp(self, train_X, train_Y, eta):
         m = len(train_X)
@@ -123,9 +128,7 @@ if __name__ == "__main__":
     test_size = 10000
 
     n = len(sys.argv)
-    if n != 5:
-        print("Incorrect system arguments provided. Ending script...")
-        exit(0)
+    assert n == 5, "Incorrect system arguments provided. Ending script..."
         
     # layers = [784, 30, 10]
     # batch_size = 10
@@ -149,4 +152,3 @@ if __name__ == "__main__":
         network.getAccuracy(test_X, test_Y)
         end_time = time.perf_counter()
         print(f"Time taken in this epoch = {end_time - start_time:0.4f} seconds")
-
