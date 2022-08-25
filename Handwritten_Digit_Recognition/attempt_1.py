@@ -7,7 +7,7 @@ import sys
 
 
 def get_data(sample_size):
-    file_path = 'train-images-idx3-ubyte.gz'
+    file_path = 'MNIST_Dataset/train-images-idx3-ubyte.gz'
     f = gzip.open(file_path, 'r')
 
     # read off unimportant bytes describing file protocol
@@ -20,7 +20,7 @@ def get_data(sample_size):
     train_data = np.frombuffer(train_data, dtype=np.uint8).astype(np.float32)
     train_data = train_data.reshape(sample_size, image_size)
 
-    file_path = 'train-labels-idx1-ubyte.gz'
+    file_path = 'MNIST_Dataset/train-labels-idx1-ubyte.gz'
     f = gzip.open(file_path, 'r')
 
     protocol_length = 8

@@ -95,8 +95,8 @@ if __name__ == "__main__":
     eta = float(sys.argv[3])                                        # 3.0
     epochs = int(sys.argv[4])                                       # 10
 
-    train_X, train_Y = get_data(train_size, 'train-images-idx3-ubyte.gz', 'train-labels-idx1-ubyte.gz')
-    test_X, test_Y = [np.transpose(a) for a in get_data(test_size, 't10k-images-idx3-ubyte.gz', 't10k-labels-idx1-ubyte.gz')]
+    train_X, train_Y = get_data(train_size, 'MNIST_Dataset/train-images-idx3-ubyte.gz', 'MNIST_Dataset/train-labels-idx1-ubyte.gz')
+    test_X, test_Y = [np.transpose(a) for a in get_data(test_size, 'MNIST_Dataset/t10k-images-idx3-ubyte.gz', 'MNIST_Dataset/t10k-labels-idx1-ubyte.gz')]
 
     network = Network(layers)
     for epoch in range(epochs):
