@@ -1,2 +1,5 @@
 .vscode
 trial.ipynb
+*.jpg
+*.jpeg
+*.png
